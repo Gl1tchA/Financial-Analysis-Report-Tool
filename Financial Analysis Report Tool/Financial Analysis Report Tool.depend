@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1687719554 source:d:\user\c programming\financial analysis report tool\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	<unistd.h>
+	<dirent.h>
+	<sys/types.h>
+
