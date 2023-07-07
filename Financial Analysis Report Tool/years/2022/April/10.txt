@@ -1,0 +1,50 @@
+Beef Steak
+1200
+60
+20
+-450
+Pork Chop
+800
+40
+20
+-300
+Chicken Curry
+1200
+60
+20
+-400
+Fish Tacos
+1100
+50
+22
+-440
+Sushi Platter
+1500
+75
+20
+-375
+Vegetable Stir-Fry
+960
+80
+12
+-240
+Spaghetti Bolognese
+800
+40
+20
+-500
+Lamb Kebabs
+1200
+60
+20
+-600
+Shrimp Scampi
+1440
+90
+16
+-480
+Tofu Pad Thai
+1200
+60
+20
+-420

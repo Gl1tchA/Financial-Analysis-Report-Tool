@@ -1,0 +1,30 @@
+Chicken Adobo
+750
+50
+15
+-600
+Pork Sinigang
+720
+60
+12
+-600
+Beef Kare-Kare
+990
+90
+11
+-880
+Pancit Bihon
+600
+50
+12
+-540
+Lechon Liempo
+660
+60
+11
+-600
+Beef Caldereta
+720
+80
+9
+-640

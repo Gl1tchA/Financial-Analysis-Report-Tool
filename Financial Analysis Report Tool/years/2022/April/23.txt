@@ -1,0 +1,35 @@
+Adobo
+1500
+50
+30
+-750
+Sinigang
+1000
+100
+10
+-600
+Lechon Sisig
+2400
+80
+30
+-1200
+Spaghetti Bolognese
+800
+40
+20
+-500
+Lamb Kebabs
+1200
+60
+20
+-600
+Shrimp Scampi
+1440
+90
+16
+-480
+Tofu Pad Thai
+1200
+60
+20
+-420

@@ -1,0 +1,50 @@
+Grilled Salmon
+2400
+80
+30
+-720
+Beef Tenderloin
+2640
+120
+22
+-720
+Chicken Parmesan
+2340
+65
+36
+-420
+Shrimp Scampi
+2400
+80
+30
+-720
+Lobster Bisque
+800
+40
+20
+-400
+Vegetable Stir-Fry
+1200
+50
+24
+-480
+Margherita Pizza
+800
+40
+20
+-400
+Bulalo
+720
+40
+18
+-360
+Sisig
+2600
+100
+26
+-650
+Tocino
+2100
+70
+30
+-600

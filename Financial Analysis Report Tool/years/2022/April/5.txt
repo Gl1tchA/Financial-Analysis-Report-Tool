@@ -1,0 +1,30 @@
+Sinigang sa Miso
+720
+120
+6
+-400
+Chicken Inasal
+800
+80
+10
+-800
+Pork Adobo
+900
+100
+9
+-500
+Kare-Kareng Baka
+1600
+80
+20
+-1200
+Pancit Canton
+600
+40
+15
+-300
+Corn Beef w Rice
+900
+60
+20
+-400

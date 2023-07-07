@@ -1,0 +1,40 @@
+Beef Steak
+2400
+60
+40
+-960
+Pork Chop
+800
+40
+20
+-300
+Chicken Curry
+2400
+60
+40
+-960
+Adobo
+1500
+50
+30
+-750
+Sinigang
+1000
+100
+10
+-600
+Lechon Sisig
+2400
+80
+30
+-1200
+Pancit
+800
+40
+20
+-400
+Bulalo
+2400
+80
+30
+-1200

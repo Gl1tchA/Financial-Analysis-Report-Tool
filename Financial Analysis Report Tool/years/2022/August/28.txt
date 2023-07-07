@@ -1,0 +1,45 @@
+Adobong Pusit
+720
+40
+18
+-300
+Tapa
+2700
+110
+25
+-560
+Kilawin
+1970
+80
+25
+-420
+Halo-Halo
+610
+40
+15
+-320
+Bulalo
+720
+40
+18
+-360
+Sisig
+2600
+100
+26
+-650
+Tocino
+2100
+70
+30
+-600
+Grilled Salmon
+2400
+80
+30
+-720
+Beef Tenderloin
+2640
+120
+22
+-500

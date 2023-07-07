@@ -1,0 +1,45 @@
+Adobo
+2500
+50
+50
+-1250
+Sinigang
+1000
+100
+10
+-600
+Lechon Sisig
+2400
+80
+30
+-1200
+Pancit
+800
+40
+20
+-400
+Bulalo
+2400
+80
+30
+-1200
+Tinola
+300
+50
+6
+-200
+Spaghetti Bolognese
+800
+40
+20
+-500
+Lamb Kebabs
+2400
+60
+40
+-960
+Shrimp Scampi
+1440
+90
+16
+-480

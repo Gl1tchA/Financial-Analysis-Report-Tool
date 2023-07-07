@@ -1,0 +1,35 @@
+Beef Bulgogi
+2750
+110
+25
+-660
+Seafood Paella
+2400
+80
+30
+-720
+Mango Sticky Rice
+600
+40
+15
+-300
+BBQ Ribs
+2880
+120
+24
+-720
+Mushroom Risotto
+800
+40
+20
+-400
+Pad Thai
+1495
+65
+23
+-455
+Grilled Panini
+720
+40
+18
+-360

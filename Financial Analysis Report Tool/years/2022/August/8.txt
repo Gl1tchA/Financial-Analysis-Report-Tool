@@ -1,0 +1,35 @@
+Pinakbet
+1400
+50
+28
+-400
+Bicol Express
+2300
+100
+23
+-500
+Paksiw
+3120
+120
+26
+-720
+Ginataang Sitaw
+840
+40
+21
+-360
+Adobo
+3600
+120
+30
+-900
+Lechon
+1820
+65
+28
+-400
+Kare-Kare
+2720
+80
+34
+-800

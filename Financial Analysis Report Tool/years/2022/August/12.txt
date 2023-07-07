@@ -1,0 +1,55 @@
+Adobong Pusit
+720
+40
+18
+-300
+Tapa
+2700
+110
+25
+-560
+Kilawin
+1970
+80
+25
+-420
+Halo-Halo
+610
+40
+15
+-320
+Beef Tenderloin
+2640
+120
+22
+-720
+Chicken Parmesan
+2340
+65
+36
+-420
+Shrimp Scampi
+2400
+80
+30
+-720
+Lobster Bisque
+800
+40
+20
+-400
+Vegetable Stir-Fry
+1200
+50
+24
+-480
+Margherita Pizza
+800
+40
+20
+-400
+Chicken Tikka Masala
+2500
+100
+25
+-625

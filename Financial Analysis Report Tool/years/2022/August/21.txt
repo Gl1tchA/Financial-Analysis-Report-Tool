@@ -1,0 +1,40 @@
+Grilled Salmon
+2400
+80
+30
+-720
+Beef Tenderloin
+2640
+120
+22
+-720
+Chicken Parmesan
+2340
+65
+36
+-420
+Sinigang
+2240
+80
+28
+-800
+Adobo
+3600
+120
+30
+-1080
+Lechon
+1690
+65
+26
+-400
+Kare-Kare
+2720
+80
+34
+-816
+Tinola
+960
+40
+24
+-384

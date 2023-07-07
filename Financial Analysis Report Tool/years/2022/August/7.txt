@@ -1,0 +1,40 @@
+Pinakbet
+1080
+50
+22
+-400
+Bicol Express
+2250
+100
+23
+-450
+Paksiw
+3100
+120
+26
+-580
+Ginataang Sitaw 
+830
+40
+21
+-350
+Lumpia
+1520
+65
+23
+-390
+Adobong Pusit
+720
+40
+18
+-300
+Tapa
+2700
+110
+25
+-560
+Kilawin
+1970
+80
+25
+-420

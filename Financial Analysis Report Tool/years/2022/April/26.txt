@@ -1,0 +1,30 @@
+Fish Tacos
+1100
+50
+22
+-440
+Sushi Platter
+3000
+75
+40
+-1200
+Vegetable Stir-Fry
+960
+80
+12
+-240
+Tinola
+300
+50
+6
+-200
+Adobong Manok
+600
+60
+10
+-400
+Sisig
+1600
+80
+20
+-800

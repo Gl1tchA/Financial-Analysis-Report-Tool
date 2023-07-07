@@ -1,0 +1,60 @@
+Ginataang Sitaw
+840
+40
+21
+-360
+Lumpia
+1690
+65
+26
+-390
+Adobong Pusit
+720
+40
+18
+-300
+Tapa
+2750
+110
+25
+-550
+Kilawin
+2000
+80
+25
+-400
+Halo-Halo
+600
+40
+15
+-240
+Grilled Salmon
+2400
+80
+30
+-720
+Beef Tenderloin
+2640
+120
+22
+-720
+Chicken Parmesan
+2340
+65
+36
+-420
+Pancit
+1200
+50
+24
+-480
+Bulalo
+720
+40
+18
+-360
+Sisig
+2600
+100
+26
+-650

@@ -1,0 +1,55 @@
+Grilled Salmon
+2400
+80
+30
+-720
+Beef Tenderloin
+2640
+120
+22
+-720
+Chicken Parmesan
+2340
+65
+36
+-420
+Shrimp Scampi
+2400
+80
+30
+-720
+Lobster Bisque
+800
+40
+20
+-400
+Vegetable Stir-Fry
+1200
+50
+24
+-480
+Margherita Pizza
+800
+40
+20
+-400
+Chicken Tikka Masala
+2500
+100
+25
+-625
+Sushi Platter
+1680
+70
+24
+-420
+Stuffed Shells
+1100
+50
+22
+-440
+Thai Green Curry
+2250
+100
+23
+-525
