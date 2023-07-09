@@ -14,6 +14,8 @@
 #define MIN_COLUMNS 3
 #define MAX_FILES 100
 #define MAX_COLUMN_SIZE 7
+#define MAX_ELEMENTS 12
+#define MAX_HEIGHT 10
 
 
 typedef struct{
@@ -52,6 +54,8 @@ void sales_performance_day(char* string);
 float efficiency_calc(product* day,int i);
 float efficiency_comparison_calc(product (*day)[], int i, int j);
 
+const char *getMonthName(int month);
+const char* convertToMonth(int monthNumber);
 void printTable(product* day, int product_count);
 char* product_listing(FILE* file, char** buffer);
 int file_exists(const char *filename);
@@ -256,7 +260,7 @@ void file_reader(int product_count,char* fileName,char* string,char* backup){
     FILE* txt_file;
     printf("Current Date: %s\n",string);
     txt_file = fopen(fileName,"r");
-    int expense,input,sum = 0,difference = 0,total_sold = 0,profit_sum = 0,prompt;
+    int expense,input,sum = 0,difference = 0,total_sold = 0,profit_sum = 0,prompt,avg_price=0;
     float efficiency_sum = 0;
     char* buffer;
     product* day;
@@ -309,6 +313,7 @@ void file_reader(int product_count,char* fileName,char* string,char* backup){
     for(int i = 0; i < product_count; i++){
         sum += day[i].revenue;
         difference += day[i].cost;
+        avg_price += day[i].price;
         total_sold += day[i].amount_sold;
         day[i].efficiency = efficiency_calc(day,i);
         efficiency_sum += day[i].efficiency;
@@ -316,10 +321,12 @@ void file_reader(int product_count,char* fileName,char* string,char* backup){
         printTable(day, product_count);
         printf("\n");
         title_function("Day Summary");
-        printf("%-25s%d\n", "Total revenue:", sum);
-        printf("%-25s%d\n", "Total expenditure:", difference);
-        printf("%-25s%d\n", "Today's Profit:", sum + difference);
-        printf("%-25s%.2f%%\n\n", "Avg. Cost-Efficiency:", efficiency_sum/product_count);
+        printf("%-30s%d\n", "Total revenue:", sum);
+        printf("%-30s%d\n", "Average Price:", avg_price/product_count);
+        printf("%-30s%d\n", "Total Product Sold:", total_sold);
+        printf("%-30s%d\n", "Total expenditure:", difference);
+        printf("%-30s%d\n", "Today's Profit:", sum + difference);
+        printf("%-30s%.2f%%\n\n", "Avg. Cost-Efficiency:", efficiency_sum/product_count);
         printf("Press any key to continue.....");
         _getch();
         clear_extra_space();
@@ -422,14 +429,23 @@ void day_or_month(char* string){
     }
 }
 void month_comparison_menu(char* string){
-    char folderName[15];
+    char* folderName;
     char date[15];
+    int num;
     title_function("Sales Comparison Menu");
-    printf("Note: Enter 4 to go back to Year Menu\n\n");
     printf("Available Months:");
     print_month();
-    printf("\nEnter month: ");
-    scanf("%s", folderName);
+    printf("\nEnter month (numerical equivalent): ");
+    if(scanf("%d", &num) == 0){
+        clearInputBuffer();
+        system("cls");
+        month_comparison_menu(string);
+        if(num >12 || num <= 0){
+            system("cls");
+            month_comparison_menu(string);
+        }
+    }
+    folderName = convertToMonth(num);
     strcpy(date, string);
     strcat(date,"-");
     strcat(date,folderName);
@@ -463,228 +479,243 @@ void month_comparison_menu(char* string){
     }
 }
 void day_comparison_menu(char* string){
-    char input_a[10];
-    char input_b[10];
-    int a_count,b_count,file_finder;
-    char day_a[10];
-    char day_b[10];
-    char date[25];
+    int num_days;
     char* buffer;
+    int day_count = day_counter(".");
 
     title_function("Sales Comparison Menu");
 
-    printf("\nPick two days to compare\n");
-    printf("\nDay [A]: ");
-    scanf("%s",input_a);
-    printf("\nDay [B]: ");
-    scanf("%s",input_b);
-
-    strcpy(date, string);
-    strcat(date,"- ");
-    strcat(date,input_a);
-    strcat(date," vs. ");
-    strcat(date,input_b);
-
-    FILE* fptr_a;
-    FILE* fptr_b;
-    strcpy(day_a,input_a);
-    strcpy(day_b,input_b);
-    strcat(day_a,".txt");
-    strcat(day_b,".txt");
-
-    file_finder = file_exists(day_a);
-    switch(file_finder){
-    case 0:
-        printf("\n\nFile A does not exist\n");
-        _getch();
+    printf("\nEnter how many days to compare: ");
+    if(scanf("%d",&num_days) == 0){
+        clearInputBuffer();
         system("cls");
-        main_menu();
-        break;
-    case 1:
-        printf("\n\nFile A exists!");
-        break;
-    default:
-        printf("Default excecption occurred");
-        break;
+        day_comparison_menu(string);
     }
-    file_finder = file_exists(day_b);
-    switch(file_finder){
-    case 0:
-        printf("\n\nFile B does not exist\n");
-        _getch();
+    if(num_days > day_count){
+        clearInputBuffer();
         system("cls");
+        day_comparison_menu(string);
+    }
+    if(num_days <= 0){
+        clearInputBuffer();
+        system("cls");
+        chdir("..");
+        chdir("..");
         main_menu();
-        break;
-    case 1:
-        printf("\n\nFile B exists!");
-        break;
-    default:
-        printf("Default excecption occurred");
-        break;
+    }
+    int input[num_days];
+    int dummy[num_days];
+    printf("\n\nEnter days to compare: \n");
+    for(int i = 0;i<num_days;i++){
+        if(scanf("%d",&input[i]) == 0){
+            clearInputBuffer();
+            system("cls");
+            day_comparison_menu(string);
+            if(input[i] > day_count){
+                printf("\nYou went past the day count!");
+                printf("\n\nPress any key to continue...");
+                _getch();
+                clearInputBuffer();
+                system("cls");
+                day_comparison_menu(string);
+            }
+            if(input[i] <= 0){
+                printf("\nInvalid value");
+                printf("\n\nPress any key to continue...");
+                _getch();
+                clearInputBuffer();
+                system("cls");
+                day_comparison_menu(string);
+            }
+
+        }
+
+        for (int j = 0; j < i; j++) {
+            if (input[i] == input[j]) {
+                printf("\nYou entered a duplicate value!");
+                printf("\n\nPress any key to continue...");
+                _getch();
+                clearInputBuffer();
+                system("cls");
+                day_comparison_menu(string);
+            }
+        }
+        dummy[i] = input[i];
     }
 
-    a_count = file_counter(day_a);
-    b_count = file_counter(day_b);
 
-    product** day = (product**)malloc(sizeof(product*) * 2);
-    day[0] = (product*)malloc(sizeof(product) * a_count);
-    day[1] = (product*)malloc(sizeof(product) * b_count);
+    FILE* fptr;
+    int file_count[num_days];
 
-    fptr_a = fopen(day_a,"r");
-    fptr_b = fopen(day_b,"r");
+    char filename[20];  // Variable to hold the filename string
 
-    for (int i = 0; i < 2; i++) {
-        if (i == 0) {
-            for (int j = 0; j < a_count; j++) {
-                char* name = product_listing(fptr_a, &buffer);
+    for (int i = 0; i < num_days; i++) {
+        sprintf(filename, "%d.txt", input[i]);  // Generate the filename string
+        file_count[i] = file_counter(filename);
+    }
+
+    product** day = (product**)malloc(sizeof(product*) * num_days);
+    for(int i = 0;i<num_days;i++){
+        day[i] = (product*)malloc(sizeof(product)*file_count[i]);
+    }
+    for (int i = 0; i < num_days; i++) {
+        char filename[20];
+        sprintf(filename, "%d.txt", input[i]);
+        fptr = fopen(filename, "r");
+        if (fptr == NULL) {
+            // Handle file open error
+            printf("Error opening file: %s\n", filename);
+            // Additional error handling code...
+        } else {
+            // File opened successfully, read data
+            for (int j = 0; j < file_count[i]; j++) {
+                // Read product data from the file and store in day[i][j]
+                char* name = product_listing(fptr, &buffer);
                 strcpy(day[i][j].name, name);
-
-                char* revenueString = product_listing(fptr_a, &buffer);
+                char* revenueString = product_listing(fptr, &buffer);
                 day[i][j].revenue = safe_atoi(revenueString);
-                char* priceString = product_listing(fptr_a, &buffer);
+                char* priceString = product_listing(fptr, &buffer);
                 day[i][j].price = atof(priceString);
-                char* salesString = product_listing(fptr_a, &buffer);
+                char* salesString = product_listing(fptr, &buffer);
                 day[i][j].amount_sold = safe_atoi(salesString);
-                char* costString = product_listing(fptr_a,&buffer);
+                char* costString = product_listing(fptr, &buffer);
                 day[i][j].cost = safe_atoi(costString);
             }
-        }
-         else {
-            for (int j = 0; j < b_count; j++) {
-                char* name = product_listing(fptr_b, &buffer);
-                strcpy(day[i][j].name, name);
-                char* revenueString = product_listing(fptr_b, &buffer);
-                day[i][j].revenue = safe_atoi(revenueString);
-                char* priceString = product_listing(fptr_b, &buffer);
-                day[i][j].price = atof(priceString);
-                char* salesString = product_listing(fptr_b, &buffer);
-                day[i][j].amount_sold = safe_atoi(salesString);
-                char* costString = product_listing(fptr_b,&buffer);
-                day[i][j].cost = safe_atoi(costString);
-            }
+            fclose(fptr);
         }
     }
+    overall total[num_days];
+    memset(total, 0, sizeof(total));
 
-    overall total[2] = {0};
-    total[0].products = a_count;
-    total[1].products = b_count;
-    for(int i = 0; i < 2; i++){
-        if(i == 0){
-            for(int j = 0; j<a_count;j++){
-                total[0].sum += day[i][j].revenue;
-                total[0].difference += day[i][j].cost;
-                total[0].sold += day[i][j].amount_sold ;
-                total[0].average_price += day[i][j].price;
-                total[0].efficiency += (float)(day[i][j].revenue + day[i][j].cost) / ((float)day[i][j].amount_sold*day[i][j].price)*100.0;
-            }
-        }
-        else{
-                printf("\nProduct B:\n");
-            for(int j = 0; j<b_count;j++){
-                total[1].sum += day[i][j].revenue;
-                total[1].difference += day[i][j].cost;
-                total[1].sold += day[i][j].amount_sold ;
-                total[1].average_price += day[i][j].price;
-                total[1].efficiency += (float)(day[i][j].revenue + day[i][j].cost) / ((float)day[i][j].amount_sold*day[i][j].price)*100.0;
+    for (int i = 0; i < num_days; i++) {
+        total[i].products = file_count[i];
+        for (int i = 0; i < num_days; i++) {
+            for (int j = 0; j < file_count[i]; j++) {
+                total[i].sum += day[i][j].revenue;
+                total[i].difference += day[i][j].cost;
+                total[i].sold += day[i][j].amount_sold;
+                total[i].average_price += day[i][j].price;
+                total[i].efficiency += ((float)(day[i][j].revenue + day[i][j].cost) / ((float)day[i][j].amount_sold * day[i][j].price)) * 100.0;
             }
         }
     }
-    total[0].profit = total[0].sum + total[0].difference;
-    total[1].profit = total[1].sum + total[1].difference;
+    for(int i = 0;i<num_days;i++){
+        for(int j = 0;j<file_count[i];j++){
+        total[i].profit = total[i].sum + total[i].difference;
+        }
+    }
 
     system("cls");
-    title_function(date);
     printf("\n");
-    print_comparison(total);
+    print_comparison(total,num_days,&dummy,string);
     printf("\n");
-    for (int i = 0; i < 2; i++) {
-    free(day[i]);
-}
+    for (int i = 0; i < num_days; i++) {
+        free(day[i]);
+    }
     free(day);
     free(buffer);
-    fclose(fptr_a);
-    fclose(fptr_b);
-    printf("\n\nPress anywhere to continue...");
-    _getch();
+    fclose(fptr);
     system("cls");
     chdir("..");
     chdir("..");
     main_menu();
-    }
+}
+
 void month_comparison(char*string){
-    char input[10],input1[10];
-    int file_count[2];
-    overall total[2];
-    char title[20];
-    memset(total, 0, sizeof(overall) * 2);
+    int num_month;
+    overall* total;
+    char title[100];
+
 
     title_function("Month Comparison Menu");
     printf("\nAvailable Months: ");
     print_month();
-    printf("\nMonth [A]: ");
-    scanf("%s",input);
-    if(folderExists(input)){
+    printf("\n");
+    printf("Compare how many months [1-12]: ");
+
+    if(scanf("%d",&num_month) == 0){
+        clearInputBuffer();
+        system("cls");
+        month_comparison(string);
+    }
+    if(num_month > 12){
+        system("cls");
+        month_comparison(string);
+    }
+    total = (overall*)malloc(sizeof(overall)*num_month);
+    memset(total, 0, sizeof(overall) * num_month);
+    int month[num_month];
+    int file_count[num_month];
+    char input[num_month][13];
+
+const char* monthNames[] = {
+    "January", "February", "March", "April",
+    "May", "June", "July", "August",
+    "September", "October", "November", "December"
+};
+
+char convertedMonths[num_month][20];  // Array to store the converted month names
+
+for (int i = 0; i < num_month; i++) {
+    printf("\nMonth [%d]: ", i + 1);
+    scanf("%s", input[i]);
+
+    month[i] = atoi(input[i]);  // Convert the input to an integer
+    if (month[i] >= 1 && month[i] <= 12) {
+        const char* monthName = monthNames[month[i] - 1];
+
+        if (folderExists(monthName)) {
+            // Check for same month input
+            for (int j = 0; j < i; j++) {
+                if (month[i] == month[j]) {
+                    printf("\nYou have input the same month.\n");
+                    printf("Press any key to continue...");
+                    _getch();
+                    system("cls");
+                    clearInputBuffer();
+                    month_comparison(string);
+                }
+            }
+
+            strcpy(convertedMonths[i], monthName);  // Store the converted month name
+            continue;
+        }
+        else {
+            printf("\nThe folder you entered does not exist!");
+            printf("\n\n\nPress any key to continue...");
+            _getch();
+            system("cls");
+            clearInputBuffer();
+            month_comparison(string);
+        }
     }
     else{
-        printf("\nThe folder you entered does not exist!");
-        printf("\n\n\nPress any key to continue...");
-        _getch();
-        system("cls");
-        clearInputBuffer();
-        month_comparison(string);
-
-    }
-    printf("Month [B]: ");
-    scanf("%s",input1);
-        if(folderExists(input1)){
-    }
-    else{
-        printf("\nThe folder you entered does not exist!");
-        printf("\n\n\nPress any key to continue...");
-        _getch();
-        system("cls");
-        clearInputBuffer();
-        month_comparison(string);
-
-    }
-    if(strcasecmp(input,input1) == 0 ){
-        printf("\n\nYou have input the same month\n");
-        printf("Press any key to continue...");
-        _getch();
         system("cls");
         month_comparison(string);
-        return;
     }
-    if(folderExists(input)){
-
+}
+    for(int i = 0;i<num_month;i++){
+        chdir(convertedMonths[i]);
+        file_count[i] = day_counter(".");
+        chdir("..");
     }
-
-    chdir(input);
-    file_count[0] = day_counter(".");
-    chdir("..");
-    chdir(input1);
-    file_count[1] = day_counter(".");
-    chdir("..");
-
-    chdir(input);
-    open_files(total,file_count[0],0);
-    chdir("..");
-    chdir(input1);
-    open_files(total,file_count[1],1);
-    chdir("..");
+    for(int i = 0;i<num_month;i++){
+        chdir(convertedMonths[i]);
+        open_files(&total[i],file_count[i],i);
+        chdir("..");
+    }
 
     system("cls");
-    sprintf(title,"%s vs. %s Comparison",input,input1);
-    title_function(title);
-    calculateEfficiency(total, 2);
-    calculate_profit(total);
-    printOverall(total);
+    calculateEfficiency(total, num_month);
+    calculate_profit(total,num_month);
+    printOverall(total,num_month,convertedMonths);
     printf("\n\nPress any key to continue...");
     _getch();
     chdir("..");
     system("cls");
     main_menu();
 }
+
 //Trend Analytics
 void trend_year() {
     char year[10];
@@ -717,26 +748,36 @@ void trend_year() {
         trend_year();
     }
 }
-void trend_month(char* string){
+void trend_month(char* string) {
     char folderName[15];
     char date[15];
     title_function("Trend Analytics Menu");
-    printf("Note: Enter 4 to go back to Year Menu\n\n");
-    printf("Available Months:");
+    printf("\nAvailable Months:");
     print_month();
     printf("\nEnter month: ");
-    scanf("%s", folderName);
+
+    int monthNumber;
+    scanf("%d", &monthNumber);
+
+    const char* monthName = convertToMonth(monthNumber);
+    if (strcmp(monthName, "Invalid month number") == 0) {
+        printf("Invalid month number. Please enter a number between 1 and 12.\n");
+        trend_month(string);
+        return;
+    }
+
+    strcpy(folderName, monthName);
     strcpy(date, string);
-    strcat(date,"-");
-    strcat(date,folderName);
+    strcat(date, "-");
+    strcat(date, folderName);
+
     if (folderExists(folderName)) {
-        if(chdir(folderName) == 0){
+        if (chdir(folderName) == 0) {
             printf("Folder entered");
             system("cls");
             clearInputBuffer();
-            trend_analytics(date,string);
-        }
-        else{
+            trend_analytics(date, string);
+        } else {
             printf("\nFailed to enter directory\n");
             system("cls");
             printf("Press any key to continue...");
@@ -744,14 +785,11 @@ void trend_month(char* string){
             chdir("..");
             main_menu();
         }
-
-    }
-    else if(strcmp(folderName,"4") == 0){
+    } else if (strcmp(folderName, "4") == 0) {
         system("cls");
         chdir("..");
         trend_year();
-    }
-    else {
+    } else {
         system("cls");
         printf("Could not find '%s' folder.\n", folderName);
         system("cls");
@@ -771,8 +809,9 @@ void trend_analytics(char* string,char* backup){
     printf("\n1. Highest earning product");
     printf("\n2. Top selling product");
     printf("\n3. Most Cost-Efficient product");
-    printf("\n4. Back");
-    printf("\n5. Exit");
+    printf("\n4. Month's Performance Graph");
+    printf("\n5. Back");
+    printf("\n6. Exit");
     printf("\n\n\nEnter Choice: ");
     scanf("%d",&input);
 
@@ -789,12 +828,17 @@ void trend_analytics(char* string,char* backup){
         system("cls");
         trend_cost_efficiency(string,backup);
         break;
+
     case 4:
+        system("cls");
+        trend_month_graph(title,backup);
+        break;
+    case 5:
         system("cls");
         chdir("..");
         trend_month(backup);
         break;
-    case 5:
+    case 6:
         system("cls");
         chdir("..");
         chdir("..");
@@ -945,15 +989,105 @@ void trend_cost_efficiency(char* string, char* backup) {
     clearInputBuffer();
     trend_analytics(string,backup);
 }
+void trend_month_graph(char* string, char* backup){
+    title_function("   Cost-Efficiency Performance    ");
+    int limit = day_counter(".");
+    char day_name[8];
+    int product_count;
+    int num_month = 12;
+    int file_count[num_month];
+    overall* total;
+    FILE* fptr;
+    char* buffer;
+    char convertedMonths[num_month][20];
+    total = (overall*)malloc(sizeof(overall)*num_month);
+    memset(total, 0, sizeof(overall)*num_month);
+    for(int i = 0;i<num_month;i++){
+        strcpy(convertedMonths[i], convertToMonth(i+1));
+    }
+    for(int i = 0;i<num_month;i++){
+        chdir(convertedMonths[i]);
+        file_count[i] = day_counter(".");
+        chdir("..");
+    }
+    for(int i = 0;i<num_month;i++){
+        chdir(convertedMonths[i]);
+        open_files(&total[i],file_count[i],i);
+        chdir("..");
+    }
+      calculateEfficiency2(total,12);
+        createGraph(total,&convertedMonths);
+    main_menu();
+}
+void createGraph(overall data[]) {
+    int heights[MAX_ELEMENTS];
+    int maxVal = 0;
+    int i, j;
 
+    // Get the heights from the efficiency field of the data
+    for (i = 0; i < MAX_ELEMENTS; i++) {
+        heights[i] = (int)(data[i].efficiency * MAX_HEIGHT);
+
+        // Find the maximum height in the array
+        if (heights[i] > maxVal) {
+            maxVal = heights[i];
+        }
+    }
+
+    // Cap values exceeding the maximum height
+    if (maxVal > MAX_HEIGHT) {
+        maxVal = MAX_HEIGHT;
+    }
+
+    // Create the graph
+    for (i = MAX_HEIGHT; i > 0; i--) {
+        for (j = 0; j < MAX_ELEMENTS; j++) {
+            if (heights[j] >= i) {
+                printf(" *  ");
+            } else {
+                printf("    ");
+            }
+        }
+        printf("\n");
+    }
+
+    // Print the horizontal barrier
+    for (i = 0; i < MAX_ELEMENTS; i++) {
+        printf("----");
+    }
+    printf("\n");
+
+    // Print the month headers
+    for (i = 0; i < MAX_ELEMENTS; i++) {
+        printf("%-4s", getMonthName(i + 1));
+    }
+    printf("\n");
+}
+const char *getMonthName(int month) {
+    const char *months[] = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+
+    if (month >= 1 && month <= 12) {
+        return months[month - 1];
+    }
+
+    return "";
+}
 //Calculation Functions
 void calculateEfficiency(overall* data, int size) {
     for (int i = 0; i < size; i++) {
         data[i].efficiency = (data[i].sum + data[i].difference) / (data[i].sold * data[i].average_price)*10000;
     }
 }
-void calculate_profit(overall* all) {
-    for (int i = 0; i < 2; i++) {
+void calculateEfficiency2(overall* data, int size) {
+    for (int i = 0; i < size; i++) {
+        data[i].efficiency = (data[i].sum + data[i].difference) / (data[i].sold * data[i].average_price)*100;
+    }
+}
+void calculate_profit(overall* all, int size) {
+    for (int i = 0; i < size; i++) {
         overall* total = &all[i];
         total->profit = total->sum + total->difference;
     }
@@ -971,6 +1105,18 @@ void modifyAveragePrice(overall data[2]) {
     }
 }
 //Reusable Functions
+const char* convertToMonth(int monthNumber) {
+    const char* months[] = {
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    };
+
+    if (monthNumber >= 1 && monthNumber <= 12) {
+        return months[monthNumber - 1];
+    } else {
+        return "Invalid month number";
+    }
+}
 void printProductInfo(product day[], int input) {
     printf("%-20s%d\n", "Product revenue:", day[input-1].revenue);
     printf("%-20s%d\n", "Price per Serving:", day[input-1].price);
@@ -980,42 +1126,162 @@ void printProductInfo(product day[], int input) {
     printf("%-20s%.2f%%\n\n", "Cost-Efficiency:", day[input-1].efficiency);
     printf("Press any key to continue.....");
 }
-void printOverall(const overall data[2]) {
-    printf("%-20s%-20s%-20s\n", "Summary", "Product 1", "Product 2");
-    printf("%-20s%-20s%-20s\n", "----------", "----------", "----------");
-    printf("%-20s%-20d%-20d\n", "Total Earned:", data[0].sum, data[1].sum);
-    printf("%-20s%-20.2f%-20.2f\n", "Total Price:", data[0].average_price, data[1].average_price);
-    printf("%-20s%-20d%-20d\n", "Total Sold:", data[0].sold, data[1].sold);
-    printf("%-20s%-20d%-20d\n", "Total Cost:", data[0].difference, data[1].difference);
-    printf("%-20s%-20d%-20d\n", "Total Profit:", data[0].profit, data[1].profit);
-    printf("%-20s%.2f%% %-12s %-.2f%% %-17s\n", "Cost Efficiency:", data[0].efficiency," ", data[1].efficiency," ");
+void printOverall(const overall data[], int size, char month[][20]) {
+    int start = 0;
+    int rowsRemaining = size;
 
+    while (rowsRemaining > 0) {
+        title_function("Month-to-Month Comparison");
+        printf("\n");
+        int rowsToPrint = (rowsRemaining >= 4) ? 4 : rowsRemaining;
+
+        printf("%-25s", "Summary");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20s", month[i]);
+        }
+        printf("\n");
+
+        printf("%-20s", "------------------");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20s", "--------------------");
+        }
+        printf("\n");
+
+        printf("%-25s", "Total Revenue:");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20d", data[i].sum);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total Price:");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20.2f", data[i].average_price);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total Amount Sold:");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20d", data[i].sold);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total Expenditure:");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20d", data[i].difference);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total Profit:");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20d", data[i].profit);
+        }
+        printf("\n");
+
+        printf("%-25s", "Cost-Efficiency(%) :");
+        for (int i = start; i < start + rowsToPrint; i++) {
+            printf("%-20.2f", data[i].efficiency);
+        }
+        printf("\n");
+
+        rowsRemaining -= rowsToPrint;
+        start += rowsToPrint;
+
+        if (rowsRemaining > 0) {
+            printf("\nPress any key to show the next set of results...");
+            _getch();
+            system("cls");
+        }
+    }
 }
-void print_comparison(overall arr[]) {
-    printf("%-25s%-20s%-20s\n", "Product Information:", "Day A", "Day B");
-    printf("\n");
-    printf("%-25s%-20d%-20d\n", "Total products:", arr[0].products, arr[1].products);
-    printf("%-25s%-20d%-20d\n", "Total earned:", arr[0].sum, arr[1].sum);
-    printf("%-25s%-20d%-20d\n", "Total cost:", arr[0].difference, arr[1].difference);
-    printf("%-25s%-20d%-20d\n", "Total products sold:", arr[0].sold, arr[1].sold);
-    printf("%-25s%-20.2f%-20.2f\n", "Average Price:", arr[0].average_price, arr[1].average_price);
-    printf("%-25s%-20d%-20d\n", "Total Profit:", arr[0].profit, arr[1].profit);
-    printf("%-25s%.2f%% %-13s %.2f%%%-20s\n", "Cost-Efficiency:", arr[0].efficiency / arr[0].products,"", arr[1].efficiency / arr[1].products,"");
+
+void print_comparison(overall arr[], int rows, int* user_input,char* string) {
+    int cols = rows; // Assuming the number of columns is equal to the number of rows
+
+    int start = 0;
+    int end = (rows > 12) ? 12 : rows; // Limit to 12 rows
+
+    while (start < rows) {
+        system("cls");
+        title_function(string);
+        printf("%-25s", "Chosen Day:");
+
+        // Print header for each day
+        for (int i = start; i < end; i++) {
+            printf("%-10d", user_input[i]);
+        }
+        printf("\n");
+
+        // Print table data for each field
+        printf("%-25s", "Total products:");
+        for (int i = start; i < end; i++) {
+            printf("%-10d", arr[i].products);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total earned:");
+        for (int i = start; i < end; i++) {
+            printf("%-10d", arr[i].sum);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total products sold:");
+        for (int i = start; i < end; i++) {
+            printf("%-10d", arr[i].sold);
+        }
+        printf("\n");
+
+        printf("%-25s", "Average Price:");
+        for (int i = start; i < end; i++) {
+            printf("%-10.2f", arr[i].average_price/arr[i].products);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total expenditure:");
+        for (int i = start; i < end; i++) {
+            printf("%-10d", arr[i].difference);
+        }
+        printf("\n");
+
+        printf("%-25s", "Total profit:");
+        for (int i = start; i < end; i++) {
+            printf("%-10d", arr[i].profit);
+        }
+        printf("\n");
+
+        printf("%-25s", "Cost Efficiency(%):");
+        for (int i = start; i < end; i++) {
+            printf("%-10.2f", arr[i].efficiency / arr[i].products);
+        }
+        printf("\n");
+
+        if (end < rows) {
+            printf("\nPress any key to show the next set of results...");
+            _getch();
+            start = end;
+            end = (end + 12 < rows) ? end + 12 : rows;
+        } else {
+            printf("\nPress any key to continue...");
+            _getch();
+            break;
+        }
+    }
 }
+
 void printTable(product* day, int product_count) {
     const int maxRows = 10;
 
-    printf("%-25s%-25s%-25s%-25s%-25s%-25s%-25s\n\n", "Product No.", "Name", "Revenue", "Price", "Amnt. Sold", "Expenditure", "Cost-Efficiency");
-
+    printf("%-20s%-20s%-20s%-20s%-20s%-20s%-20s%-20s\n\n", "Product No.", "Name", "Revenue", "Price", "Amnt. Sold", "Expenditure", "Profit", "Cost-Efficiency");
 
     for (int i = 0; i < product_count && i < maxRows; i++) {
-        printf("%-25d%-25s%-25d%-25d%-25d%-25d%.2f%%\n",
+        int profit = day[i].revenue - day[i].cost;
+        printf("%-20d%-20s%-20d%-20d%-20d%-20d%-20d%.2f%%\n",
                i + 1,
                day[i].name,
                day[i].revenue,
                day[i].price,
                day[i].amount_sold,
                day[i].cost,
+               profit,
                day[i].efficiency);
     }
 }
@@ -1042,17 +1308,17 @@ void PrintSubfolders(const char* folderPath) {
 
     FindClose(hFind);
 }
-void print_month(){
+void print_month() {
     char* months[] = {
-        "January", "February", "March", "April",
-        "May", "June", "July", "August",
-        "September", "October", "November", "December"
+        "[01] January", "[02] February", "[03] March", "[04] April",
+        "[05] May", "[06] June", "[07] July", "[08] August",
+        "[09] September", "[10] October", "[11] November", "[12] December"
     };
 
     int i;
     printf("\n");
     for (i = 0; i < 12; i++) {
-        printf("%-15s", months[i]);
+        printf("%-20s", months[i]);
 
         // Print newline after every 4th month
         if ((i + 1) % 4 == 0)
@@ -1060,12 +1326,11 @@ void print_month(){
     }
 }
 void open_files(overall* all, int file_num,int num) {
-    char fileName[8];
+    char fileName[11];
     int product_count;
     char* buffer;
 
-    overall *total = &all[0];
-    overall *total1 = &all[1];
+    overall *total = all;
 
     for (int i = 1; i <= file_num; i++) {
         sprintf(fileName, "%d.txt", i);
@@ -1076,11 +1341,9 @@ void open_files(overall* all, int file_num,int num) {
         }
         product_count = file_counter(fileName);
 
-        if(num==0){
-            total->product_count += product_count;
-            for (int j = 0; j < product_count; j++){
-
-                char* trash = product_listing(file,&buffer);
+        total->product_count += product_count;
+        for (int j = 0; j < product_count; j++){
+            char* trash = product_listing(file,&buffer);
                 char* revenueString;
                 revenueString = product_listing(file,&buffer);
                 total->sum += safe_atoi(revenueString);
@@ -1090,29 +1353,14 @@ void open_files(overall* all, int file_num,int num) {
                 total->sold += safe_atoi(salesString);
                 char* costString = product_listing(file,&buffer);
                 total->difference += safe_atoi(costString);
-            }
-        }
-        else{
-            total1->product_count += product_count;
-            for (int j = 0; j < product_count; j++){
-                char* trash = product_listing(file,&buffer);
-                char* revenueString;
-                revenueString = product_listing(file,&buffer);
-                total1->sum += safe_atoi(revenueString);
-                char* priceString = product_listing(file,&buffer);
-                total1->average_price += safe_atoi(priceString);
-                char* salesString = product_listing(file,&buffer);
-                total1->sold += safe_atoi(salesString);
-                char* costString = product_listing(file,&buffer);
-                total1->difference += safe_atoi(costString);
+                }
+            free(buffer);
+            fclose(file);
             }
 
-        }
-        free(buffer);
-        fclose(file);
-    }
 
 }
+
 int compareFilenames(const void* a, const void* b) {
     const char* filenameA = *(const char**)a;
     const char* filenameB = *(const char**)b;
